@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Dashboard - SETT</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="../../static/main_app/dashboard_supervisor_util.css">
+	<link rel="stylesheet" type="text/css" href="../../static/main_app/dashboard_supervisor.css">
+	<link rel="stylesheet" href="{% static 'main_app/styles.css' %}">
+<!--===============================================================================================-->
+</head>
+<body>
+	<header>
+              
+		<div class="wrapper">
+		    <div class="brand">
+			<a href="#">SETT</a>
+		    </div>
+		    <nav> 
+
+			<a href="{% url 'dashboard-supervisor' %}">DashBoard</a>
+			<a href="{% url 'profile' %}">Profile</a>
+			<a href="{% url 'logout' %}">Logout</a>
+
+		    </nav>
+
+		</div>
+    </header>
+	
+	<div class="limiter">
+		<div class="container-dash">
+			<span class="main-title">
+				SETT
+			</span>
+			<div class="dashboard">
+				<span class="dashboard-title">
+					Shifts Pending Approval
+				</span>
+				
+				<div class="table">
+					<form method="POST">
+						{% csrf_token %}
+						<table class="table">
+							<tr>
+								<th class="th">Job ID</th>
+								<th class="th">Student ID</th>
+								<th class="th">Student</th>
+								<th class="th">Hours</th>
+								<th class="th">Date</th>
+								<th class="th">Approve</th>
+							</tr>
+							{% for job in jobs %}
+								<tr>
+									<td class="td">{{job.id_job}}</td>
+									<td class="td">{{job.student.id_student}}</td>
+									<td class="td">{{job.student}}</td>
+									<td class="td">{{job.hours}}</td>
+									<td class="td"></td>
+									<td class="td">
+										<input type="checkbox" name="approved" value="{{ job.id_job }}"/>&nbsp;
+									</td>
+								</tr>
+							{% endfor %}
+						</table>
+						<div class="btn-container">
+							<button class="approve-btn" type="submit">
+								Submit
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</body>
+</html>

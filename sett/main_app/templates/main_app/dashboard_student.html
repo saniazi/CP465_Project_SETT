@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - SETT</title>
+    <link rel="stylesheet" href="{% static 'main_app/styles.css' %}">
+    
+</head>
+<body style = "background: url(../../static/main_app/images/goldenhalk.png); background-size: cover">
+    <div class="container">
+        <header>
+            
+            <div class="wrapper">
+                <div class="brand">
+                    <a href="#">SETT</a>
+                </div>
+                <nav> 
+
+                    <a href="{% url 'dashboard-student' %}">DashBoard</a>
+                    <a href="{% url 'profile' %}">Profile</a>
+                    <a href="{% url 'logout' %}">Logout</a>
+                    
+                </nav>
+            
+            </div>
+        </header>
+        <div class="title-area">
+            <div class="wrapper">
+                <h2> Submit Hours to Payroll</h2>    
+            </div>
+        </div>
+        <div class="current-area">  
+            <div class="table-area">
+                <h2>Current Jobs </h2> 
+                <!-- <form action="DatabaseInfo" method = "GET" enctype="multipart/form-data">
+                    <textarea id = "currentJobs" name = "currentJobs" cols = "100" rows = "10" placeholder="Info from Database will be Displayed Here..."></textarea>
+                </form> -->
+                <div class="table">
+                    <table class = "table">
+                        <tr>
+                            <th>Job ID</th>
+                            <th>Status</th>
+                            <th>Student</th>
+                            <th>Supervisor</th>
+                            <th>Hours</th>
+                            <th>Pay</th>
+                            <th>Season</th>
+                        </tr>
+
+                        {% for job in jobs %}
+                            <tr>
+                                <td>{{job.id_job}}</td>
+                                <td>{% if job.approved %}
+                                        Approved
+                                    {% else %}
+                                        Pending approval
+                                    {% endif %}
+                                </td>
+                                <td>{{job.student}}</td>
+                                <td>{{job.supervisor}}</td>
+                                <td>{{job.hours}}</td>
+                                <td>{{job.pay}}</td>
+                                <td>{{job.season}}</td>
+                            </tr>
+                        {% endfor %}
+
+                    </table>
+                </div>
+                <a class = "Button-class textcenter" href="{% url 'hours-form-regular' %}" role = "button">Regular Form</a>
+                <a class = "Button-class textcenter" href="{% url 'hours-form-assistants' %}" role = "button">Assistant Form</a>
+                
+            </div>
+        </div>
+
+        <div class="summary-area">
+            <div class="wrapper">
+                <h2> Summary</h2> 
+                <div class = "summary-info">
+                    <form action="databaseInfo" method="GET" enctype="multipart/form-data">
+                        
+                        <label for="currentJobs">Total Hours For Work Week:</label>
+                        <textarea id = "currentJobs" name = "currentJobs" cols = "10" rows = "1">{{total_hours}}</textarea>
+                        
+                        
+                    
+                    </form> 
+                </div> 
+                
+                <div class = "summary-infoAmount"> 
+                    <form action="databaseInfo" method="GET" enctype="multipart/form-data">
+                            <label for="TotalAmount">Amount to be Paid Out: </label>
+                            <textarea id = "TotalAmount" name = "TotalAmount" cols = "10" rows = "1">${{amount}}</textarea>
+                        
+                    </form>
+                </div>  
+            </div>
+        </div>
+          
+        </div>
+         
+    </div>
+</body>
+</html>

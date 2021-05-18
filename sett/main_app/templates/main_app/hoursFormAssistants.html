@@ -1,0 +1,102 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block content %}
+<form class="form-inline" method='POST' action="" enctype='multipart/form-data'>{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" name="Submit">
+</form>
+{% endblock content %}
+
+<!--
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assitant Form</title>
+    <link rel="stylesheet" href="{% static 'main_app/styles.css' %}">
+</head>
+<body style = "background: url(../../static/main_app/images/lightpurpHalk.jpg); background-size: cover">
+    <div class="container">
+        <header>
+            <div class="wrapper">
+                <div class="brand">
+                    <a href="#">SETT</a>
+                </div>
+                <nav> 
+      
+                    <a href="{% url 'dashboard-student' %}">DashBoard</a>
+                    
+                    
+                    
+                    <a href="{% url 'profile' %}">Profile</a>
+                    <a href="{% url 'logout' %}">Logout</a>
+                    
+                </nav>
+            
+            </div>
+        </header>
+        <div class="title">
+            <div class="wrapper">
+                <h2> IA/Marker/Proctor Form</h2>    
+            </div>
+        </div>
+        <div class="current-area">
+            <div class="wrapper">
+                <form class="form-inline" method='POST' action="" enctype='multipart/form-data'>{% csrf_token %}
+                    <fieldset>
+                        
+                        <label for="hours_date">Date</label>
+                        <input type="date" name="hours_date" id="hours_date" min="2021-01-01">
+                        
+                        <label for="start_time">Start Time</label>
+                        <input type="time" name="start_time" id="start_time" min="06:00" max="20:00">
+                        
+                        <label for="end_time">End Time</label>
+                        <input type="time" name="end_time" id="end_time" min="06:00" max="20:00">
+
+                        <label for="supervisor_name">Supervisor</label>
+                        <input type="text" name="supervisor_name" id="supervisor_name" placeholder ="Enter Name Here...">
+                        
+                        <div class="checks">
+                        <p>Student Year:</p>
+
+                        <input type="radio" name="year_2" id="year_2" value="second">  
+                        <label for="year_2">2nd</label>
+                        
+                        <input type="radio" name="year_3" id="year_3" value="third">
+                        <label for="year_3">3rd</label>
+                        
+                        <input type="radio" name="year_4" id="year_4" value="fourth">
+                        <label for="year_4">4th</label>
+                        
+                        <input type="radio" name="year_MA" id="year_MA" value="MA">
+                        <label for="year_MA">MA or PhD</label>
+                        
+                        {{form.YEAR}}
+                            
+                        </div>
+
+                        <div class="checks">
+
+                            <p>Include Hazardous Material</p>
+
+                            <input type="radio" name="HazMaterial" id="yes" value="yes">
+                            <label for="yes">Yes</label>
+                            
+                            <input type="radio" name="HazMaterial" id="no" value="no">
+                            <label for="no">No</label>
+                            
+                            
+                        </div>
+                        
+
+                        <input type="submit" id ="submit" value= "Submit">
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+   
+</body>
+</html>

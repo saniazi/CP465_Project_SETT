@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Employee Form </title>
+    <link rel="stylesheet" href="{% static 'main_app/styles.css' %}">
+</head>
+<body style = "background: url(../../static/main_app/images/lightpurpHalk.jpg); background-size: cover">
+  <div class="container">
+    <header>
+              
+      <div class="wrapper">
+          <div class="brand">
+              <a href="#">SETT</a>
+          </div>
+          <nav> 
+
+            <a href="{% url 'dashboard-student' %}">DashBoard</a>
+                    
+                    
+            
+            <a href="{% url 'profile' %}">Profile</a>
+             <a href="{% url 'logout' %}">Logout</a>
+              
+          </nav>
+      
+      </div>
+    </header>
+    <div class="title">
+      <div class="wrapper">
+          <h2> Regular Student Form</h2>    
+      </div>
+    </div>
+    <div class="current-area">
+      <div class="wrapper">
+        <!--div places components in a page, helps organize and select the code -->
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <fieldset>
+            <label for="hours_date">Date</label>
+            <input type="date" name="hours_date" id="hours_date" min="2021-01-01">
+            
+            <label for="start_time">Start Time</label>
+            <input type="time" name="start_time" id="start_time" min="06:00" max="20:00">
+            
+            <label for="end_time">End Time</label>
+            <input type="time" name="end_time" id="end_time" min="06:00" max="20:00">
+
+            <label for="job_id">Job ID</label>
+            <input type="number" name="job_id" id="job_id" placeholder ="Enter ID Here..." min="0">
+            
+            <input type="submit" id ="submit" value= "Submit">
+            {% for message in messages %}
+              {{ message }}
+            {% endfor %}
+            </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+   
+</body>
+</html>
