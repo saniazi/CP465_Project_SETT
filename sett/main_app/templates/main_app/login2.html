@@ -17,7 +17,7 @@
 	<div class="limiter">
 		<div class="container-login100">
 			<span class="main-title">
-				SETT
+				WLU SETT
 			</span>
 			<div class="wrap-login100">
 				<div class="login100-pic js-tilt" data-tilt>
@@ -52,15 +52,17 @@
 						</button>
 					</div>
 					{% for message in messages %}
-						{{ message }}
+						<div class="text-center p-t-13">
+							<p class="error-message"><i class="fa fa-exclamation-triangle"></i> {{ message }}</p>
+						</div>
 					{% endfor %}
-					<div class="text-center p-t-136">
+					<div class="text-center p-t-13">
 						<a class="txt2" href="{% url 'register-student' %}">
 							Register as a Student
 							<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
 						</a>
 					</div>
-					<div class="text-center p-t-136">
+					<div class="text-center">
 						<a class="txt2" href="{% url 'register-supervisor' %}">
 							Register as a Supervisor
 							<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
@@ -70,7 +72,6 @@
 			</div>
 		</div>
 	</div>
-
 
 </body>
 </html>
