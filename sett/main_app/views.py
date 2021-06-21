@@ -1,14 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import RegisterForm, RegisterFormStudent, RegisterFormSupervisor, createHoursFormAssistants
-from .forms import RegisterForm, RegisterFormStudent, RegisterFormSupervisor, YEAR_CHOICES
+from .forms import (RegisterForm, RegisterFormStudent, RegisterFormSupervisor, 
+createHoursFormAssistants, YEAR_CHOICES)
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from .decorators import unauthenticated_user
 import datetime
+import json
 
 # Create your views here.
 
@@ -27,7 +28,7 @@ def home(request):
         is_supervisor = False
 
     if is_student and not is_supervisor:
-        return redirect('dashboard-student')
+        return redirect('student-dash')
     
     if not is_student and is_supervisor:
         return redirect('dashboard-supervisor')
@@ -199,7 +200,6 @@ def profile(request):
             first_name=first_name,
             last_name=last_name,
             dob=dob,
-            sin=SIN,
             email=email,
             phone=number,
             school_year=school_year
@@ -249,4 +249,64 @@ def supervisor_register(request):
         form_custom_user = RegisterFormSupervisor()
     context = {'form_user': form_user, 'form_custom_user': form_custom_user}
     return render(request, 'main_app/supervisor_register.html', context)
- 
+
+
+def base(request):
+    return render(request, 'main_app/base.html', {})
+
+
+def student_dashboard(request):
+    if request.method == 'POST':
+        if 'add' in request.POST:
+            form = createHoursFormAssistants(request.POST, prefix="add")
+        elif 'update' in request.POST:
+            pk = request.POST.get('pk')
+            entry = TimeSheetEntry.objects.get(pk=pk)
+            form = createHoursFormAssistants(request.POST, prefix="update", instance=entry)
+        elif 'delete' in request.POST:
+            pk = request.POST.get('pk')
+            num_deleted = TimeSheetEntry.objects.filter(pk=pk).delete()
+
+            return HttpResponse(json.dumps({}), content_type='application/json')
+        else:
+            json_data = json.dumps({'no_action': 'Error: action to perform on form not found.'})
+
+            return HttpResponse(json_data, content_type='application/json')
+
+        if form.is_valid():
+            json_data = json.dumps({})
+            form.save()
+        else:
+            json_data = form.errors.as_json()
+
+        return HttpResponse(json_data, content_type='application/json')
+        
+    entry_form = createHoursFormAssistants(prefix="add", user=request.user)
+    update_form = createHoursFormAssistants(prefix="update", user=request.user)
+    context = {'add_form': entry_form, 'update_form': update_form}
+    
+    return render(request, "main_app/student_dashboard.html", context)
+
+
+def student_entries(request):
+    start_date = datetime.datetime.strptime(request.GET.get('start_date'), '%a %b %d %Y')
+    end_date = datetime.datetime.strptime(request.GET.get('end_date'), '%a %b %d %Y')
+    entries = TimeSheetEntry.objects.all().filter(job__student=request.user.student, date__range=(start_date, end_date))
+    data = []
+    for entry in entries:
+        data.append(dict(
+            date=str(entry.date),
+            job=str(entry.job.job_id),
+            position=entry.job.position,
+            supervisor=str(entry.job.supervisor),
+            start_time=entry.start_time.strftime('%I:%M %p'),
+            end_time=entry.end_time.strftime('%I:%M %p'),
+            hours=str(entry.hours),
+            wage='$'+str(entry.job.wage),
+            season=entry.job.season,
+            status='Approved' if entry.approved else 'Pending approval',
+            id=entry.id
+        ))
+
+    json_data = json.dumps(data)
+    return HttpResponse(json_data, content_type='application/json')

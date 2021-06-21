@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.utils import timezone
+import datetime
 
 # Create your models here.
 
@@ -132,12 +135,33 @@ class DjangoSession(models.Model):
 
 
 class Job(models.Model):
-    id_job = models.AutoField(primary_key=True)
-    pay = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
-    season = models.CharField(max_length=45, blank=True, null=True)
-    student = models.ForeignKey('Student', models.DO_NOTHING, blank=True, null=True)
-    supervisor = models.ForeignKey('Supervisor', models.DO_NOTHING, blank=True, null=True)
+    TEACHING_ASSISTANT = 'TA'
+    LAB_ASSISTANT = 'Lab Assistant'
+    MARKER = 'Marker'
+    PROCTOR = 'Proctor'
+    FALL = 'Fall'
+    WINTER = 'Winter'
+    SPRING = 'Spring'
+
+    POSITION_CHOICES = [
+        (TEACHING_ASSISTANT, 'Teaching Assistant'),
+        (LAB_ASSISTANT, 'Lab Assistant'),
+        (MARKER, 'Marker'),
+        (PROCTOR, 'Proctor')
+    ]
+    SEASON_CHOICES = [
+        (FALL, 'Fall'),
+        (WINTER, 'Winter'),
+        (SPRING, 'Spring')
+    ]
+
+    job_id = models.IntegerField(primary_key=True, validators=[MinValueValidator(0), MaxValueValidator(99999999)])
+    wage = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
+    season = models.CharField(max_length=6, choices=SEASON_CHOICES, default=FALL)
+    student = models.ForeignKey('Student', models.CASCADE, blank=True, null=True)
+    supervisor = models.ForeignKey('Supervisor', models.CASCADE, blank=True, null=True)
     approved = models.BooleanField(default=False)
+    position = models.CharField(max_length=100, null=True, choices=POSITION_CHOICES, default=TEACHING_ASSISTANT)
     
     dateHours = models.DateField(blank=True, null=True)
     startTime = models.DateField(blank=True, null=True)
@@ -145,17 +169,46 @@ class Job(models.Model):
 
     # to do
     # Caculate hours from startTime and endTime
-    hours = models.IntegerField(blank=True, null=True)
+    hours = models.PositiveIntegerField(default=0)
+    overtime = models.PositiveIntegerField(default=0)
 
-    hazardous = models.CharField(max_length=3, blank=True, null=True)
-    studentYear = models.IntegerField(blank=True, null=True)
+    # hazardous = models.CharField(max_length=3, blank=True, null=True)
+    # studentYear = models.IntegerField(blank=True, null=True)
     #studentYear = models.ForeignKey('Student', models.DO_NOTHING, blank=True, null=True)
     def __str__(self):
-	    return f"ID: {self.id_job} Student: {self.student} Supervisor: {self.supervisor}"
+	    return f"{self.job_id}"
 
     class Meta:
         #managed = False
         db_table = 'job'
+
+
+class TimeSheetEntry(models.Model):
+    date = models.DateField(default=datetime.date.today)
+    job = models.ForeignKey('Job', models.CASCADE)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    approved = models.BooleanField(default=False)
+
+    @property
+    def hours(self):
+        if self.start_time > self.end_time:
+            end_date_time = datetime.datetime.combine(datetime.date.min + datetime.timedelta(days=1), self.end_time)
+        else:
+            end_date_time = datetime.datetime.combine(datetime.date.min, self.end_time)
+        
+        start_date_time = datetime.datetime.combine(datetime.date.min, self.start_time)
+        diff = end_date_time - start_date_time
+        diff = diff.total_seconds()
+        diff = round((diff/3600)*4)/4
+        return diff
+
+    def __str__(self):
+	    return f"Date: {self.date} Job: {self.job.job_id}"
+    
+    class Meta:
+        db_table = 'time_sheet_entry'
+        constraints = [models.UniqueConstraint(fields=['date', 'job', 'start_time', 'end_time'], name='unique_entry')]
 
 
 class Student(models.Model):
@@ -165,7 +218,6 @@ class Student(models.Model):
     first_name = models.CharField(max_length=200, blank=True, null=True)
     last_name = models.CharField(max_length=200, blank=True, null=True)
     dob = models.DateField(blank=True, null=True)
-    sin = models.CharField(max_length=45, blank=True, null=True)
     email = models.CharField(max_length=200, blank=True, null=True)
     phone = models.CharField(max_length=45, blank=True, null=True)
     school_year = models.IntegerField(blank=True, null=True)

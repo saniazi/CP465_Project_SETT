@@ -1,0 +1,53 @@
+body, html {
+    height: 100%;
+}
+
+body {
+    padding-top: 56px;
+}
+
+#week-selector-wrapper .datepicker .datepicker-days tr td.active~td {
+    color: #fff;
+    background-color: #286090;
+    border-color: #204d74;
+    border-radius: 0;
+}
+
+#week-selector-wrapper .datepicker .datepicker-days tr td.active {
+    border-radius: 0;
+}
+
+#week-selector-wrapper .datepicker .datepicker-days tr:hover td {
+    color: #000!important;
+    background: #e5e2e3!important;
+    border-radius: 0!important;
+}
+/* 
+.btn:focus {
+    outline: none;
+    box-shadow: none;
+  } */
+
+#week-picker {
+    background-color: #f2f2f2;
+}
+
+.table {
+    background-color: white;
+}
+
+.edit-button {
+    color:#000;
+}
+
+.edit-button:hover {
+    color: rgb(82, 82, 82);
+}
+
+.cancel-button {
+    color: rgb(195, 0, 0);
+}
+
+.cancel-button:hover {
+    color: rgb(150, 67, 67);
+}
