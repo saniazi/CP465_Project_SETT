@@ -55,7 +55,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'rest_auth.registration',
+    'dj_rest_auth',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -159,3 +170,18 @@ LOGIN_REDIRECT_URL = 'home'
 AUTHENTICATION_BACKENDS = ['main_app.backends.EmailBackend']
 
 TIME_INPUT_FORMATS = ('%H:%M',)
+
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
+
+# Don't require username for user
+ACCOUNT_USERNAME_REQUIRED = False
+
+REST_AUTH_REGISTER_SERIALIZERS = {
+    "REGISTER_SERIALIZER": "main_app.serializers.CustomRegisterSerializer",
+}

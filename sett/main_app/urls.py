@@ -17,6 +17,7 @@ from django.urls import path
 from . import views as main_views
 from django.contrib.auth import views as auth_views
 from .forms import LoginFormView
+from django.conf.urls import include, url
 
 
 urlpatterns = [
@@ -32,5 +33,8 @@ urlpatterns = [
     path('profile/', main_views.profile, name='profile'),
     path('base/', main_views.base, name='base'),
     path('student_dashboard/', main_views.student_dashboard, name='student-dash'),
-    path('get_student_entries/', main_views.student_entries, name='student_entries')
+    path('get_student_entries/', main_views.student_entries, name='student_entries'),
+    url(r'^rest-auth/', include('rest_auth.urls')),
+    url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
+    path('dj-rest-auth/', include('dj_rest_auth.urls'))
 ]
