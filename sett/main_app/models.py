@@ -212,15 +212,35 @@ class TimeSheetEntry(models.Model):
 
 
 class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    id_student = models.AutoField(primary_key=True)
-    username = models.CharField(max_length=200, null=True)
-    first_name = models.CharField(max_length=200, blank=True, null=True)
-    last_name = models.CharField(max_length=200, blank=True, null=True)
-    dob = models.DateField(blank=True, null=True)
-    email = models.CharField(max_length=200, blank=True, null=True)
-    phone = models.CharField(max_length=45, blank=True, null=True)
-    school_year = models.IntegerField(blank=True, null=True)
+    SCHOOL_YEARS = [1, 2, 3, 4, 5, 6]
+    YEAR_CHOICES = [
+        (SCHOOL_YEARS[0], '1'),
+        (SCHOOL_YEARS[1], '2'),
+        (SCHOOL_YEARS[2], '3'),
+        (SCHOOL_YEARS[3], '4'),
+        (SCHOOL_YEARS[4], '5'),
+        (SCHOOL_YEARS[5], '6')
+    ]
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
+    id_student = models.IntegerField(
+        primary_key=True, 
+        validators=[MinValueValidator(1), MaxValueValidator(999999999)],
+        error_messages={
+            'unique': 'Student with this ID is already registered.'
+        }
+    )
+    first_name = models.CharField(max_length=15)
+    last_name = models.CharField(max_length=100)
+    dob = models.DateField()
+    email = models.EmailField(
+        unique=True,
+        error_messages={
+            'unique': 'This email is already registered.'
+        }
+    )
+    phone = models.CharField(max_length=18, blank=True, null=True)
+    school_year = models.IntegerField(choices=YEAR_CHOICES)
     profile_pic = models.ImageField(default="profile1.png", null=True, blank=True)
 
     def __str__(self):
@@ -232,16 +252,20 @@ class Student(models.Model):
 
 
 class Supervisor(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    username = models.CharField(max_length=200, null=True)
-    id_supervisor = models.AutoField(primary_key=True)
-    first_name = models.CharField(max_length=200, blank=True, null=True)
-    last_name = models.CharField(max_length=200, blank=True, null=True)
-    dob = models.DateField(blank=True, null=True)
-    sin = models.CharField(max_length=45, blank=True, null=True)
-    email = models.CharField(max_length=200, blank=True, null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
+    id_supervisor = models.IntegerField(primary_key=True, error_messages={
+        'unique': 'Supervisor with this ID is already registered.'
+        })
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
+    email = models.EmailField(
+        unique=True,
+        error_messages={
+            'unique': 'This email is already registered.'
+        }
+    )
     phone = models.CharField(max_length=45, blank=True, null=True)
-    department = models.IntegerField(blank=True, null=True)
+    department = models.CharField(max_length=200)
 
     def __str__(self):
 	    return f"{self.first_name} {self.last_name}"

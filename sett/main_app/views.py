@@ -5,7 +5,7 @@ createHoursFormAssistants, YEAR_CHOICES)
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from django.http import Http404, HttpResponseRedirect, HttpResponse
+from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse
 from django.urls import reverse
 from .decorators import unauthenticated_user
 import datetime
@@ -41,18 +41,62 @@ def home(request):
 @unauthenticated_user
 def login_view(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
-        password =request.POST.get('pass')
-        user = authenticate(request, username=email, password=password)
-        
-        if user is not None:
-            login(request, user)
-            return redirect('home')
+        #print(request.POST)
+        if 'student-id_student' in request.POST:
+            return register(request, 'student', RegisterForm, RegisterFormStudent)
+        elif 'super-id_supervisor' in request.POST:
+            return register(request, 'super', RegisterForm, RegisterFormSupervisor)
         else:
-            messages.error(request, 'Email or password is incorrect')
-            return redirect('login')
+            email = request.POST.get('email')
+            password =request.POST.get('pass')
+            user = authenticate(request, username=email, password=password)
+            
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            else:
+                messages.error(request, 'Email or password is incorrect')
+                return redirect('login')
     
-    return render(request, 'main_app/login2.html')
+    user_form_student = RegisterForm(prefix='student')
+    custom_form_student = RegisterFormStudent(prefix='student')
+
+    supervisor_form = RegisterForm(prefix='super')
+    custom_supervisor_form = RegisterFormSupervisor(prefix='super')
+
+    context = {
+        'student_form': user_form_student, 
+        'custom_student_form': custom_form_student,
+        'super_form': supervisor_form,
+        'custom_super_form': custom_supervisor_form
+    }
+    
+    return render(request, 'main_app/login.html', context)
+
+
+def register(request, prefix, user_registor_form, custom_registor_form):
+    user_form = user_registor_form(request.POST, prefix=prefix)
+    custom_form = custom_registor_form(request.POST, prefix=prefix)
+    print(user_form.is_valid())
+    print(custom_form.is_valid())
+    if user_form.is_valid() and custom_form.is_valid():
+        user = user_form.save()
+        custom_user = custom_form.save()
+
+        custom_user.user = user
+        user.username = custom_user.email
+        custom_user.save(update_fields=['user'])   
+        user.save(update_fields=['username'])
+
+        auth_user = authenticate(request, username=custom_user.email, password=request.POST[f'{prefix}-password1'])
+        if auth_user:      
+            login(request, auth_user)
+            print('done')
+            return JsonResponse({'status': 0, 'redirect': reverse('home')})
+    else:
+        errors = {**user_form.errors, **custom_form.errors}
+        #print(custom_form.errors.as_json())
+        return JsonResponse({'status': 1, 'errors': errors})
 
 
 def logout_view(request):
