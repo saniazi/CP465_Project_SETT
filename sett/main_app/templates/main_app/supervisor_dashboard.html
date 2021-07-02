@@ -6,6 +6,20 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.min.css" integrity="sha512-rxThY3LYIfYsVCWPCW9dB0k+e3RZB39f23ylUYTEuZMDrN/vRqLdaCBo/FbvVT6uC2r0ObfPzotsfKF9Qc5W5g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" type="text/css" href="{% static 'main_app/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
 {% endblock header %}
+{% block nav_links %}
+<li class="nav-item active">
+    <a class="nav-link" href="{% url 'super-dash' %}">Dashboard</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="#">Create Position</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+</li>
+{% endblock nav_links %}
 {% block content %}
 
 <div id="container" class="container-fluid px-5 pb-5" style="background-color: #f5f5f5;">
