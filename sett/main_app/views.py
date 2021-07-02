@@ -31,7 +31,7 @@ def home(request):
         return redirect('student-dash')
     
     if not is_student and is_supervisor:
-        return redirect('dashboard-supervisor')
+        return redirect('super-dash')
     
     if request.user.is_superuser:
         return HttpResponseRedirect(reverse('admin:index'))
@@ -299,6 +299,7 @@ def base(request):
     return render(request, 'main_app/base.html', {})
 
 
+@login_required(login_url='login')
 def student_dashboard(request):
     if request.method == 'POST':
         if 'add' in request.POST:
@@ -332,25 +333,62 @@ def student_dashboard(request):
     return render(request, "main_app/student_dashboard.html", context)
 
 
-def student_entries(request):
+@login_required(login_url='login')
+def supervisor_dashboard(request):
+    if request.method == 'POST':
+        if 'action' in request.POST:
+            action = request.POST.get('action')
+            if action == 'approve':
+                update_status(request.POST.getlist('entry_pks'), True, False)
+            elif action == 'reject':
+                update_status(request.POST.getlist('entry_pks'), False, True)
+            else:
+                update_status(request.POST.getlist('entry_pks'), False, False)
+            return JsonResponse({})
+
+    context = {}
+    return render(request, "main_app/supervisor_dashboard.html", context)
+
+
+def update_status(pks, approved, rejected):
+    entries = TimeSheetEntry.objects.filter(pk__in=pks)
+    for entry in entries:
+        entry.approved = approved
+        entry.rejected = rejected
+        entry.save(update_fields=['approved', 'rejected'])
+
+
+def get_entries(request):
     start_date = datetime.datetime.strptime(request.GET.get('start_date'), '%a %b %d %Y')
     end_date = datetime.datetime.strptime(request.GET.get('end_date'), '%a %b %d %Y')
-    entries = TimeSheetEntry.objects.all().filter(job__student=request.user.student, date__range=(start_date, end_date))
+    source = request.GET.get('source')
+    if source == 'student':
+        entries = TimeSheetEntry.objects.filter(job__student=request.user.student, date__range=(start_date, end_date))
+    else:
+        entries = TimeSheetEntry.objects.filter(job__supervisor=request.user.supervisor, date__range=(start_date, end_date))
+
     data = []
     for entry in entries:
+        if entry.approved:
+            status = 'Approved'
+        elif entry.rejected:
+            status = 'Rejected'
+        else:
+            status = 'Pending approval'
+        
+        name = str(entry.job.supervisor) if source == 'student' else str(entry.job.student)
         data.append(dict(
             date=str(entry.date),
             job=str(entry.job.job_id),
             position=entry.job.position,
-            supervisor=str(entry.job.supervisor),
+            name=name,
             start_time=entry.start_time.strftime('%I:%M %p'),
             end_time=entry.end_time.strftime('%I:%M %p'),
             hours=str(entry.hours),
             wage='$'+str(entry.job.wage),
             season=entry.job.season,
-            status='Approved' if entry.approved else 'Pending approval',
+            status=status,
             id=entry.id
         ))
 
-    json_data = json.dumps(data)
-    return HttpResponse(json_data, content_type='application/json')
+    return JsonResponse(data, safe=False)

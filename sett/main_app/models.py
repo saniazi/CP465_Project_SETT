@@ -189,6 +189,7 @@ class TimeSheetEntry(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     approved = models.BooleanField(default=False)
+    rejected = models.BooleanField(default=False)
 
     @property
     def hours(self):

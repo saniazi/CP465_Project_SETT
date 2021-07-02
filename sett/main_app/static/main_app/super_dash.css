@@ -1,0 +1,42 @@
+body, html {
+    height: 100%;
+}
+
+body {
+    padding-top: 56px;
+}
+
+.datepicker .datepicker-days tr td.active~td {
+    color: #fff;
+    background-color: #286090;
+    border-color: #204d74;
+    border-radius: 0;
+}
+
+.datepicker .datepicker-days tr td.active {
+    border-radius: 0;
+}
+
+.datepicker .datepicker-days tr:hover td {
+    color: #000!important;
+    background: #e5e2e3!important;
+    border-radius: 0!important;
+}
+
+#week-picker {
+    background-color: #f2f2f2;
+}
+
+.table {
+    background-color: white;
+}
+
+.action-buttons {
+    text-align: right;
+}
+
+@media screen and (max-width: 767px) {
+    .action-buttons {
+        text-align: center;
+    }
+}

@@ -33,8 +33,9 @@ urlpatterns = [
     path('profile/', main_views.profile, name='profile'),
     path('base/', main_views.base, name='base'),
     path('student_dashboard/', main_views.student_dashboard, name='student-dash'),
-    path('get_student_entries/', main_views.student_entries, name='student_entries'),
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
-    path('dj-rest-auth/', include('dj_rest_auth.urls'))
+    path('dj-rest-auth/', include('dj_rest_auth.urls')),
+    path('supervisor_dashboard/', main_views.supervisor_dashboard, name='super-dash'),
+    path('get_entries/', main_views.get_entries, name='get_entries'),
 ]
