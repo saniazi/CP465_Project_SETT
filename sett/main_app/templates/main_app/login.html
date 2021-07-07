@@ -55,11 +55,13 @@
 							Login
 						</button>
 					</div>
-					{% for message in messages %}
-						<div class="text-center p-t-13">
-							<p class="error-message"><i class="fa fa-exclamation-triangle"></i> {{ message }}</p>
-						</div>
-					{% endfor %}
+					{% if messages %}
+						{% for message in messages %}
+							<div class="text-center p-t-13">
+								<p class="error-message"><i class="fa fa-exclamation-triangle"></i> {{ message }}</p>
+							</div>
+						{% endfor %}
+					{% endif %}
 					<div class="text-center p-t-13">
 						<a class="txt2" href="javascript:void(0)" data-toggle="modal" data-target="#student-modal">
 							Register as a Student
