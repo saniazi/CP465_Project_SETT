@@ -38,4 +38,6 @@ urlpatterns = [
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('supervisor_dashboard/', main_views.supervisor_dashboard, name='super-dash'),
     path('get_entries/', main_views.get_entries, name='get_entries'),
+    path('update_position/', main_views.update_position, name='positions'),
+    path('get_job/', main_views.get_job, name='get_job'),
 ]

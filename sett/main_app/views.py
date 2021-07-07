@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import (RegisterForm, RegisterFormStudent, RegisterFormSupervisor, 
-createHoursFormAssistants, YEAR_CHOICES)
+createHoursFormAssistants, YEAR_CHOICES, UpdatePositionForm)
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -15,6 +15,8 @@ import json
 
 @login_required(login_url='login')
 def home(request):
+    # print(request.user.supervisor)
+    # print(request.user)
     try:
         Student.objects.get(user=request.user)
         is_student = True
@@ -34,7 +36,8 @@ def home(request):
         return redirect('super-dash')
     
     if request.user.is_superuser:
-        return HttpResponseRedirect(reverse('admin:index'))
+        #return HttpResponseRedirect(reverse('admin:index'))
+        return redirect('admin:index')
     
     raise Http404
 
@@ -392,3 +395,45 @@ def get_entries(request):
         ))
 
     return JsonResponse(data, safe=False)
+
+@login_required(login_url='login')
+def update_position(request):
+    if request.method == 'POST':
+        if 'new' in request.POST:
+            form = UpdatePositionForm(request.POST)
+            if form.is_valid():
+                job = form.save()
+                messages.success(request, f'Successfully added job {job.job_id}!')
+            else:
+                messages.warning(request, 'Please correct the errors below.')
+        elif 'save' in request.POST:
+            selected = request.POST['job_id']
+            job = Job.objects.get(job_id=selected)
+            form = UpdatePositionForm(request.POST, instance=job)
+            if form.is_valid():
+                form.save()
+                messages.success(request, f'Successfully saved job {selected}!')
+            else:
+                messages.warning(request, 'Please correct the errors below.')
+        elif 'delete' in request.POST:
+            selected = request.POST['job_id']
+            job = Job.objects.get(job_id=selected).delete()
+            messages.success(request, f'Successfully deleted job {selected}!')
+        return redirect('positions')
+        
+    form = UpdatePositionForm(user=request.user, 
+        initial={'supervisor': request.user.supervisor})
+    jobs = Job.objects.filter(supervisor=request.user.supervisor)
+    context = {'form': form, 'jobs': jobs}
+    return render(request, 'main_app/update_position.html', context)
+
+
+def get_job(request):
+    job = Job.objects.get(job_id=request.GET['job_id'])
+    data = {
+        'position': job.position,
+        'wage': job.wage,
+        'season': job.season,
+        'student': str(job.student)
+    }
+    return JsonResponse(data)

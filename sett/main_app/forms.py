@@ -35,7 +35,7 @@ class LoginFormView(SuccessMessageMixin, auth_views.LoginView):
     success_message = "Login Successful"
 
 
-class RegisterFormStudent(forms.ModelForm):
+class RegisterFormStudent(ModelForm):
     class Meta:
         model = Student
         fields = ['id_student', 'first_name', 'last_name', 'dob', 'school_year', 'phone', 'email']
@@ -55,7 +55,7 @@ class RegisterFormStudent(forms.ModelForm):
         }
 
 
-class RegisterFormSupervisor(forms.ModelForm):
+class RegisterFormSupervisor(ModelForm):
     class Meta:
         model = Supervisor
         fields = ['id_supervisor', 'first_name', 'last_name', 'department', 'phone', 'email']
@@ -68,7 +68,7 @@ class RegisterFormSupervisor(forms.ModelForm):
             'id_supervisor': forms.NumberInput(attrs=custom_validity('Supervisor ID')),
             'first_name': forms.TextInput(attrs=custom_validity('First name')),
             'last_name': forms.TextInput(attrs=custom_validity('Last name')),
-            'department': forms.TextInput(attrs=custom_validity('Department name')),
+            'department': forms.Select(attrs=custom_validity('Department name')),
             'email': forms.TextInput(attrs=custom_validity('Email'))
         }
 
@@ -83,7 +83,7 @@ class YEAR_CHOICES(forms.Form):
     YEAR = forms.CharField(widget=forms.RadioSelect(choices=YEAR))
 
 
-class createHoursFormAssistants(forms.ModelForm):
+class createHoursFormAssistants(ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -111,3 +111,21 @@ class createHoursFormAssistants(forms.ModelForm):
             'end_time': 'Time Out'
         }
 
+
+class UpdatePositionForm(ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(UpdatePositionForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['supervisor'].queryset = Supervisor.objects.filter(user=user)
+
+    class Meta:
+        model = Job
+        fields = [
+            'position',
+            'wage',
+            'season',
+            'student',
+            'supervisor'
+        ]

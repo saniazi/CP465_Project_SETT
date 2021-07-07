@@ -81,9 +81,10 @@ class AuthUserUserPermissions(models.Model):
 
 
 class Department(models.Model):
-    id_department = models.AutoField(primary_key=True)
-    job = models.ForeignKey('Job', models.DO_NOTHING, blank=True, null=True)
-    dep_name = models.CharField(max_length=200, blank=True, null=True)
+    dep_name = models.CharField(max_length=200)
+
+    def __str__(self):
+	    return self.dep_name
 
     class Meta:
         #managed = False
@@ -155,28 +156,15 @@ class Job(models.Model):
         (SPRING, 'Spring')
     ]
 
-    job_id = models.IntegerField(primary_key=True, validators=[MinValueValidator(0), MaxValueValidator(99999999)])
-    wage = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
-    season = models.CharField(max_length=6, choices=SEASON_CHOICES, default=FALL)
-    student = models.ForeignKey('Student', models.CASCADE, blank=True, null=True)
-    supervisor = models.ForeignKey('Supervisor', models.CASCADE, blank=True, null=True)
-    approved = models.BooleanField(default=False)
-    position = models.CharField(max_length=100, null=True, choices=POSITION_CHOICES, default=TEACHING_ASSISTANT)
-    
-    dateHours = models.DateField(blank=True, null=True)
-    startTime = models.DateField(blank=True, null=True)
-    endTime = models.DateField(blank=True, null=True)
-
-    # to do
-    # Caculate hours from startTime and endTime
-    hours = models.PositiveIntegerField(default=0)
-    overtime = models.PositiveIntegerField(default=0)
-
-    # hazardous = models.CharField(max_length=3, blank=True, null=True)
-    # studentYear = models.IntegerField(blank=True, null=True)
-    #studentYear = models.ForeignKey('Student', models.DO_NOTHING, blank=True, null=True)
+    job_id = models.AutoField(primary_key=True, validators=[MinValueValidator(0), MaxValueValidator(99999999)])
+    wage = models.DecimalField(max_digits=6, decimal_places=2)
+    season = models.CharField(max_length=6, choices=SEASON_CHOICES)
+    student = models.ForeignKey('Student', models.CASCADE)
+    supervisor = models.ForeignKey('Supervisor', models.CASCADE)
+    position = models.CharField(max_length=100, choices=POSITION_CHOICES) 
+   
     def __str__(self):
-	    return f"{self.job_id}"
+	    return str(self.job_id)
 
     class Meta:
         #managed = False
@@ -240,12 +228,12 @@ class Student(models.Model):
             'unique': 'This email is already registered.'
         }
     )
-    phone = models.CharField(max_length=18, blank=True, null=True)
+    phone = models.CharField(max_length=18, blank=True)
     school_year = models.IntegerField(choices=YEAR_CHOICES)
     profile_pic = models.ImageField(default="profile1.png", null=True, blank=True)
 
     def __str__(self):
-	    return f"{self.first_name} {self.last_name}"
+	    return str(self.id_student)
 
     class Meta:
         #managed = False
@@ -265,11 +253,11 @@ class Supervisor(models.Model):
             'unique': 'This email is already registered.'
         }
     )
-    phone = models.CharField(max_length=45, blank=True, null=True)
-    department = models.CharField(max_length=200)
+    phone = models.CharField(max_length=18, blank=True)
+    department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-	    return f"{self.first_name} {self.last_name}"
+	    return str(self.id_supervisor)
 
     class Meta:
         #managed = False
