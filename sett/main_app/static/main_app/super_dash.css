@@ -3,7 +3,7 @@
 } */
 
 body {
-    padding-top: 56px;
+    padding-top: 66px;
 }
 
 .datepicker .datepicker-days tr td.active~td {
@@ -39,4 +39,11 @@ body {
     .action-buttons {
         text-align: center;
     }
+}
+
+.pos-form {
+    background: white;
+    padding: 20px;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
 }

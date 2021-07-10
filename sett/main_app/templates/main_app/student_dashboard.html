@@ -1,4 +1,5 @@
 {% extends 'main_app/base.html' %}
+{% load crispy_forms_tags %}
 {% load static %}
 {% block header %}
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css">
@@ -7,15 +8,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'main_app/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
 {% endblock header %}
 {% block nav_links %}
-<li class="nav-item active">
-    <a class="nav-link" href="{% url 'student-dash' %}">Dashboard</a>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="{% url 'profile' %}">Profile</a>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-</li>
+{% include 'main_app/nav_links_student.html' %}
 {% endblock nav_links %}
 {% block content %}
 
@@ -84,7 +77,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        {{add_form.as_p}}
+                        {{ add_form|crispy }}
                         <div class="invalid-feedback" data-error="unique_together">
                             Entry already exists!
                         </div>
@@ -109,7 +102,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        {{update_form.as_p}}
+                        {{ update_form|crispy }}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
@@ -242,6 +235,7 @@
     
     $(document).ready(() => {
         $('html').css('background-color', '#f5f5f5');
+        $('#dashboard-link').addClass('active');
         weekpicker = $('.week-picker');
 
         weekpicker.datepicker({
