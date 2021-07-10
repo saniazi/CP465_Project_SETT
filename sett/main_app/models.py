@@ -16,8 +16,8 @@ import datetime
 # Feel free to rename the models, but don't rename db_table values or field names.
 
 def user_directory_path(instance, filename):
-        # file will be uploaded to MEDIA_ROOT/<user.id>/<filename>
-        return f'{instance.user.id}/{filename}'
+        # file will be uploaded to MEDIA_ROOT/images/profile_pics/<user.id>/<filename>
+        return f'images/profile_pics/{instance.user.id}/{filename}'
 
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150)
@@ -236,7 +236,7 @@ class Student(models.Model):
     )
     phone = models.CharField(max_length=18, blank=True)
     school_year = models.IntegerField(choices=YEAR_CHOICES)
-    profile_pic = models.ImageField(default="profile_pics/default.png", upload_to=user_directory_path)
+    profile_pic = models.ImageField(default="images/profile_pics/default.png", upload_to=user_directory_path)
 
     def __str__(self):
 	    return str(self.id_student)
@@ -271,10 +271,20 @@ class Supervisor(models.Model):
     )
     phone = models.CharField(max_length=18, blank=True)
     department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True)
-    profile_pic = models.ImageField(default="profile_pics/default.png", upload_to=user_directory_path)
+    profile_pic = models.ImageField(default="images/profile_pics/default.png", upload_to=user_directory_path)
 
     def __str__(self):
 	    return str(self.id_supervisor)
+
+    def save(self):
+        super().save()
+
+        img = Image.open(self.profile_pic.path)
+
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.profile_pic.path)
 
     class Meta:
         #managed = False

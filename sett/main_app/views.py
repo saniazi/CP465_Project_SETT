@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import (RegisterForm, RegisterFormStudent, RegisterFormSupervisor, 
-createHoursFormAssistants, YEAR_CHOICES, UpdatePositionForm, UpdateStudentForm)
+    createHoursFormAssistants, YEAR_CHOICES, UpdatePositionForm, UpdateStudentForm,
+    UpdateSupervisorForm)
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse
 from django.urls import reverse
 from .decorators import unauthenticated_user
@@ -443,21 +445,30 @@ def get_job(request):
     return JsonResponse(data)
 
 
-def profile_student(request, pk):
-    student = Student.objects.get(id_student=pk)
-    if request.method == 'POST' and getattr(request.user, 'student', None) == student:
-        print(request.POST)
-        print(request.user.student.id_student)
-        form = UpdateStudentForm(request.POST, request.FILES, instance=student)
-        if form.is_valid():
-            print('ss')
-            form.save()
-            messages.success(request, f'Your profile has been updated!')
-            return redirect(reverse('profile-student', args=[student.id_student]))
+def profile(request, pk):
+    user = User.objects.filter(pk=pk)
+    if user:
+        if hasattr(user[0], 'student'):
+            user_type = user[0].student
+            modelform = UpdateStudentForm
+        elif hasattr(user[0], 'supervisor'):
+            user_type = user[0].supervisor
+            modelform = UpdateSupervisorForm
         else:
-            messages.warning(request, 'Please correct the errors below.')
-    else:
-        form = UpdateStudentForm(instance=student)
+            raise Http404
 
-    context = {'student': student, 'pk': pk, 'form': form}
-    return render(request, 'main_app/profile_student.html', context)
+        if request.method == 'POST' and request.user.id == pk:
+            form = modelform(request.POST, request.FILES, instance=user_type)
+            if form.is_valid():
+                form.save()
+                messages.success(request, f'Your profile has been updated!')
+                return redirect(reverse(f'profile', args=[pk]))
+            else:
+                messages.warning(request, 'Please correct the errors below.')
+        else:
+            form = modelform(instance=user_type)
+
+        context = {'user': user_type, 'pk': pk, 'form': form}
+        return render(request, 'main_app/profile.html', context)
+    else:
+        raise Http404

@@ -142,3 +142,21 @@ class UpdateStudentForm(ModelForm):
             'email': forms.TextInput(attrs=custom_validity('Email')),
             'profile_pic': forms.FileInput
         }
+
+
+class UpdateSupervisorForm(ModelForm):
+    class Meta:
+        model = Supervisor
+        fields = '__all__'
+        exclude = ['user', 'id_supervisor']
+        labels = {
+            'phone': 'Phone number',
+            'profile_pic': 'Profile picture'
+        }
+        widgets = {
+            'first_name': forms.TextInput(attrs=custom_validity('First name')),
+            'last_name': forms.TextInput(attrs=custom_validity('Last name')),
+            'phone': forms.TextInput(attrs={'placeholder': 'e.g. 123-456-7890'}),
+            'email': forms.TextInput(attrs=custom_validity('Email')),
+            'profile_pic': forms.FileInput
+        }

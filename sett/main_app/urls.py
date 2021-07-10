@@ -32,7 +32,7 @@ urlpatterns = [
     path('dashboard_student/', main_views.dashboard_student, name='dashboard-student'),
     path('profile/hoursFormAssistants/', main_views.hoursFormAssistants, name='hours-form-assistants'),
     path('profile/hoursFormRegular/', main_views.hoursFormRegular, name='hours-form-regular'),
-    path('student_profile/<int:pk>/', main_views.profile_student, name='profile-student'),
+    path('profile/<int:pk>/', main_views.profile, name='profile'),
     path('base/', main_views.base, name='base'),
     path('student_dashboard/', main_views.student_dashboard, name='student-dash'),
     url(r'^rest-auth/', include('rest_auth.urls')),
