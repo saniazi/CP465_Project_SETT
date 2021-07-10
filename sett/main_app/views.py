@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import (RegisterForm, RegisterFormStudent, RegisterFormSupervisor, 
-createHoursFormAssistants, YEAR_CHOICES, UpdatePositionForm)
+createHoursFormAssistants, YEAR_CHOICES, UpdatePositionForm, UpdateStudentForm)
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -224,38 +224,38 @@ def hoursFormRegular(request):
     return render(request, "main_app/hoursFormRegular.html")
 
 
-@login_required(login_url='login') 
-def profile(request):
-    if request.method == 'POST':
-        #print("Received POST from Profile page")
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        email = request.POST['email']
-        number = request.POST['number']
-        dob = request.POST['dob']
-        dob = datetime.datetime.strptime(dob, '%Y-%m-%d')
-        dob = dob.date()
-        SIN = request.POST['SIN']
-        school_year = int(request.POST['school_year'])
+# @login_required(login_url='login') 
+# def profile(request):
+#     if request.method == 'POST':
+#         #print("Received POST from Profile page")
+#         first_name = request.POST['first_name']
+#         last_name = request.POST['last_name']
+#         email = request.POST['email']
+#         number = request.POST['number']
+#         dob = request.POST['dob']
+#         dob = datetime.datetime.strptime(dob, '%Y-%m-%d')
+#         dob = dob.date()
+#         SIN = request.POST['SIN']
+#         school_year = int(request.POST['school_year'])
 
-        # Testing
-        print(f'{type(dob)}')
-        print(first_name, last_name, email, dob, number, SIN)
+#         # Testing
+#         print(f'{type(dob)}')
+#         print(first_name, last_name, email, dob, number, SIN)
     
 
-        db_instance = Student(
-            first_name=first_name,
-            last_name=last_name,
-            dob=dob,
-            email=email,
-            phone=number,
-            school_year=school_year
-            )
-        db_instance.save()
-        print("Form data saved to db")
-        return render(request, "main_app/dashboard_student.html", {'title': 'Dashboard Student'})
+#         db_instance = Student(
+#             first_name=first_name,
+#             last_name=last_name,
+#             dob=dob,
+#             email=email,
+#             phone=number,
+#             school_year=school_year
+#             )
+#         db_instance.save()
+#         print("Form data saved to db")
+#         return render(request, "main_app/dashboard_student.html", {'title': 'Dashboard Student'})
 
-    return render(request, "main_app/profile.html", {'title': 'Profile'})
+#     return render(request, "main_app/profile.html", {'title': 'Profile'})
 
 
 @unauthenticated_user
@@ -398,12 +398,14 @@ def get_entries(request):
 
 @login_required(login_url='login')
 def update_position(request):
+    selected = ''
     if request.method == 'POST':
         if 'new' in request.POST:
             form = UpdatePositionForm(request.POST)
             if form.is_valid():
                 job = form.save()
                 messages.success(request, f'Successfully added job {job.job_id}!')
+                return redirect('positions')
             else:
                 messages.warning(request, 'Please correct the errors below.')
         elif 'save' in request.POST:
@@ -413,18 +415,20 @@ def update_position(request):
             if form.is_valid():
                 form.save()
                 messages.success(request, f'Successfully saved job {selected}!')
+                return redirect('positions')
             else:
                 messages.warning(request, 'Please correct the errors below.')
         elif 'delete' in request.POST:
             selected = request.POST['job_id']
             job = Job.objects.get(job_id=selected).delete()
             messages.success(request, f'Successfully deleted job {selected}!')
-        return redirect('positions')
+            return redirect('positions')
+    else:
+        form = UpdatePositionForm(user=request.user, 
+            initial={'supervisor': request.user.supervisor})
         
-    form = UpdatePositionForm(user=request.user, 
-        initial={'supervisor': request.user.supervisor})
     jobs = Job.objects.filter(supervisor=request.user.supervisor)
-    context = {'form': form, 'jobs': jobs}
+    context = {'form': form, 'jobs': jobs, 'selected': selected}
     return render(request, 'main_app/update_position.html', context)
 
 
@@ -437,3 +441,23 @@ def get_job(request):
         'student': str(job.student)
     }
     return JsonResponse(data)
+
+
+def profile_student(request, pk):
+    student = Student.objects.get(id_student=pk)
+    if request.method == 'POST' and getattr(request.user, 'student', None) == student:
+        print(request.POST)
+        print(request.user.student.id_student)
+        form = UpdateStudentForm(request.POST, request.FILES, instance=student)
+        if form.is_valid():
+            print('ss')
+            form.save()
+            messages.success(request, f'Your profile has been updated!')
+            return redirect(reverse('profile-student', args=[student.id_student]))
+        else:
+            messages.warning(request, 'Please correct the errors below.')
+    else:
+        form = UpdateStudentForm(instance=student)
+
+    context = {'student': student, 'pk': pk, 'form': form}
+    return render(request, 'main_app/profile_student.html', context)

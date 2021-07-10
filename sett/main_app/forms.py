@@ -38,7 +38,8 @@ class LoginFormView(SuccessMessageMixin, auth_views.LoginView):
 class RegisterFormStudent(ModelForm):
     class Meta:
         model = Student
-        fields = ['id_student', 'first_name', 'last_name', 'dob', 'school_year', 'phone', 'email']
+        fields = '__all__'
+        exclude = ['user', 'profile_pic']
         labels = {
             'id_student': 'Student ID',
             'dob': 'Date of birth',
@@ -58,7 +59,8 @@ class RegisterFormStudent(ModelForm):
 class RegisterFormSupervisor(ModelForm):
     class Meta:
         model = Supervisor
-        fields = ['id_supervisor', 'first_name', 'last_name', 'department', 'phone', 'email']
+        fields = '__all__'
+        exclude = ['user', 'profile_pic']
         labels = {
             'id_supervisor': 'ID',
             'phone': 'Phone number'
@@ -93,12 +95,8 @@ class createHoursFormAssistants(ModelForm):
 
     class Meta:
         model = TimeSheetEntry
-        fields = [
-            'job',
-            'date',
-            'start_time',
-            'end_time'
-        ]
+        fields = '__all__'
+        exclude = ['approved', 'rejected']
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
             'start_time': forms.TimeInput(attrs={'type': 'time'}),
@@ -122,10 +120,25 @@ class UpdatePositionForm(ModelForm):
 
     class Meta:
         model = Job
-        fields = [
-            'position',
-            'wage',
-            'season',
-            'student',
-            'supervisor'
-        ]
+        fields = '__all__'
+
+
+class UpdateStudentForm(ModelForm):
+    class Meta:
+        model = Student
+        fields = '__all__'
+        exclude = ['user', 'id_student']
+        labels = {
+            'dob': 'Date of birth',
+            'phone': 'Phone number',
+            'profile_pic': 'Profile picture'
+        }
+        widgets = {
+            'first_name': forms.TextInput(attrs=custom_validity('First name')),
+            'last_name': forms.TextInput(attrs=custom_validity('Last name')),
+            'dob': forms.DateInput(attrs={**custom_validity('Date of birth'), **{'type': 'date'}}),
+            'school_year': forms.Select(attrs=custom_validity('School year')),
+            'phone': forms.TextInput(attrs={'placeholder': 'e.g. 123-456-7890'}),
+            'email': forms.TextInput(attrs=custom_validity('Email')),
+            'profile_pic': forms.FileInput
+        }

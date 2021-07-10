@@ -185,3 +185,7 @@ ACCOUNT_USERNAME_REQUIRED = False
 REST_AUTH_REGISTER_SERIALIZERS = {
     "REGISTER_SERIALIZER": "main_app.serializers.CustomRegisterSerializer",
 }
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'main_app/static/main_app/media')
+MEDIA_URL = '/media/'
+# print(BASE_DIR)

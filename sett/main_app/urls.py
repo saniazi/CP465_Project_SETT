@@ -18,6 +18,8 @@ from . import views as main_views
 from django.contrib.auth import views as auth_views
 from .forms import LoginFormView
 from django.conf.urls import include, url
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -30,7 +32,7 @@ urlpatterns = [
     path('dashboard_student/', main_views.dashboard_student, name='dashboard-student'),
     path('profile/hoursFormAssistants/', main_views.hoursFormAssistants, name='hours-form-assistants'),
     path('profile/hoursFormRegular/', main_views.hoursFormRegular, name='hours-form-regular'),
-    path('profile/', main_views.profile, name='profile'),
+    path('student_profile/<int:pk>/', main_views.profile_student, name='profile-student'),
     path('base/', main_views.base, name='base'),
     path('student_dashboard/', main_views.student_dashboard, name='student-dash'),
     url(r'^rest-auth/', include('rest_auth.urls')),
@@ -41,3 +43,7 @@ urlpatterns = [
     path('update_position/', main_views.update_position, name='positions'),
     path('get_job/', main_views.get_job, name='get_job'),
 ]
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

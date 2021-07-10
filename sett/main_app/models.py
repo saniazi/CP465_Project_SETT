@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
+from PIL import Image
 import datetime
 
 # Create your models here.
@@ -13,6 +14,10 @@ import datetime
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
+
+def user_directory_path(instance, filename):
+        # file will be uploaded to MEDIA_ROOT/<user.id>/<filename>
+        return f'{instance.user.id}/{filename}'
 
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150)
@@ -213,7 +218,8 @@ class Student(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     id_student = models.IntegerField(
-        primary_key=True, 
+        primary_key=True,
+        blank=True,
         validators=[MinValueValidator(1), MaxValueValidator(999999999)],
         error_messages={
             'unique': 'Student with this ID is already registered.'
@@ -230,10 +236,20 @@ class Student(models.Model):
     )
     phone = models.CharField(max_length=18, blank=True)
     school_year = models.IntegerField(choices=YEAR_CHOICES)
-    profile_pic = models.ImageField(default="profile1.png", null=True, blank=True)
+    profile_pic = models.ImageField(default="profile_pics/default.png", upload_to=user_directory_path)
 
     def __str__(self):
 	    return str(self.id_student)
+
+    def save(self):
+        super().save()
+
+        img = Image.open(self.profile_pic.path)
+
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.profile_pic.path)
 
     class Meta:
         #managed = False
@@ -255,6 +271,7 @@ class Supervisor(models.Model):
     )
     phone = models.CharField(max_length=18, blank=True)
     department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True)
+    profile_pic = models.ImageField(default="profile_pics/default.png", upload_to=user_directory_path)
 
     def __str__(self):
 	    return str(self.id_supervisor)
