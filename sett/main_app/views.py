@@ -80,6 +80,8 @@ def login_view(request):
 
 
 def register(request, prefix, user_registor_form, custom_registor_form):
+    # Supervisor.objects.filter(id_supervisor=15).delete()
+    # User.objects.filter(id=39).delete()
     user_form = user_registor_form(request.POST, prefix=prefix)
     custom_form = custom_registor_form(request.POST, prefix=prefix)
     print(user_form.is_valid())
@@ -89,9 +91,9 @@ def register(request, prefix, user_registor_form, custom_registor_form):
         custom_user = custom_form.save()
 
         custom_user.user = user
-        user.username = custom_user.email
+        user.username = user.email = custom_user.email
         custom_user.save(update_fields=['user'])   
-        user.save(update_fields=['username'])
+        user.save(update_fields=['username', 'email'])
 
         auth_user = authenticate(request, username=custom_user.email, password=request.POST[f'{prefix}-password1'])
         if auth_user:      
@@ -449,16 +451,16 @@ def profile(request, pk):
     user = User.objects.filter(pk=pk)
     if user:
         if hasattr(user[0], 'student'):
-            user_type = user[0].student
+            user_group = user[0].student
             modelform = UpdateStudentForm
         elif hasattr(user[0], 'supervisor'):
-            user_type = user[0].supervisor
+            user_group = user[0].supervisor
             modelform = UpdateSupervisorForm
         else:
             raise Http404
 
         if request.method == 'POST' and request.user.id == pk:
-            form = modelform(request.POST, request.FILES, instance=user_type)
+            form = modelform(request.POST, request.FILES, instance=user_group)
             if form.is_valid():
                 form.save()
                 messages.success(request, f'Your profile has been updated!')
@@ -466,9 +468,9 @@ def profile(request, pk):
             else:
                 messages.warning(request, 'Please correct the errors below.')
         else:
-            form = modelform(instance=user_type)
+            form = modelform(instance=user_group)
 
-        context = {'user': user_type, 'pk': pk, 'form': form}
+        context = {'user': user_group, 'pk': pk, 'form': form}
         return render(request, 'main_app/profile.html', context)
     else:
         raise Http404
