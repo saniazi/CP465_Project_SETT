@@ -131,6 +131,12 @@
         return `<input type="checkbox" data-pk="${pk}" value="${status}" />`;
     }
 
+    const profile_link = data => {
+        let [id, user_pk] = data.split(' ');
+        let href = "{% url 'profile' 0 %}".replace(/0/, user_pk);
+        return `<a href=${href}>${id}</a>`;
+    }
+
     const customize_modal = (title, body, action, status) => {
         current_action = action;
         status_msg = status;
@@ -223,7 +229,12 @@
                 { "data": "date"},
                 { "data": "job"},
                 { "data": "position"},
-                { "data": "name"},
+                { 
+                    "data": "emp_info",
+                    "render": (data, type, row, meta) => {
+                        return profile_link(data);
+                    }
+                },
                 { "data": "start_time"},
                 { "data": "end_time"},
                 { "data": "hours"},
