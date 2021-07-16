@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block header %}
-<link rel="stylesheet" type="text/css" href="{% static 'main_app/profile.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'main_app/styles.css' %}">
 {% endblock header %}
 {% block nav_links %}
 {% if request.user.student %}
@@ -12,95 +12,93 @@
 {% endif %}
 {% endblock nav_links %}
 {% block content %}
-<div id="container" class="container-fluid px-5 pb-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-6 col-auto">
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% else %}
-                <div class="row pb-5"></div>
-            {% endif %}
-            <div class="row">
-                <div class="col">
-                    <div class="content-section">
-                        <div class="media">
-                            <img class="rounded-circle account-img" src="{{ user.profile_pic.url }}">
-                            <div class="media-body">
-                            <h2 class="account-heading">{{ user.first_name }} {{ user.last_name }}</h2>
-                            <p class="text-secondary">{{ user.email }}</p>
-                            </div>
+<div class="row justify-content-center nm-5">
+    <div class="col-lg-6 col-auto">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="row pb-5"></div>
+        {% endif %}
+        <div class="row">
+            <div class="col">
+                <div class="content-section">
+                    <div class="media">
+                        <img class="rounded-circle account-img" src="{{ user.profile_pic.url }}">
+                        <div class="media-body">
+                        <h2 class="account-heading">{{ user.first_name }} {{ user.last_name }}</h2>
+                        <p class="text-secondary">{{ user.email }}</p>
                         </div>
-                        <form method="POST" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <fieldset class="form-group">
-                                <legend class="border-bottom mb-4">Profile Info</legend>
+                    </div>
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <fieldset class="form-group">
+                            <legend class="border-bottom mb-4">Profile Info</legend>
+                            <div class="form-group">
+                                <label class="profile-label text-secondary">ID:</label>
+                                <div>
+                                    {{ user.pk }}
+                                </div>
+                            </div>
+                            {% if request.user.id == pk %}
+                                {{ form|crispy }}
+                            {% else %}
+                                <hr/>
                                 <div class="form-group">
-                                    <label class="profile-label text-secondary">ID:</label>
+                                    <label class="profile-label text-secondary">First Name:</label>
                                     <div>
-                                        {{ user.pk }}
+                                        {{ user.first_name }}
                                     </div>
                                 </div>
-                                {% if request.user.id == user.user.id %}
-                                    {{ form|crispy }}
+                                <hr/>
+                                <div class="form-group">
+                                    <label class="profile-label text-secondary">Last Name:</label>
+                                    <div>
+                                        {{ user.last_name }}
+                                    </div>
+                                </div>
+                                {% if user.user.student %}
+                                    <hr/>
+                                    <div class="form-group">
+                                        <label class="profile-label text-secondary">Date of Birth:</label>
+                                        <div>
+                                            {{ user.dob }}
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <div class="form-group">
+                                        <label class="profile-label text-secondary">School Year:</label>
+                                        <div>
+                                            {{ user.school_year }}
+                                        </div>
+                                    </div>
                                 {% else %}
                                     <hr/>
                                     <div class="form-group">
-                                        <label class="profile-label text-secondary">First Name:</label>
+                                        <label class="profile-label text-secondary">Department:</label>
                                         <div>
-                                            {{ user.first_name }}
-                                        </div>
-                                    </div>
-                                    <hr/>
-                                    <div class="form-group">
-                                        <label class="profile-label text-secondary">Last Name:</label>
-                                        <div>
-                                            {{ user.last_name }}
-                                        </div>
-                                    </div>
-                                    {% if user.user.student %}
-                                        <hr/>
-                                        <div class="form-group">
-                                            <label class="profile-label text-secondary">Date of Birth:</label>
-                                            <div>
-                                                {{ user.dob }}
-                                            </div>
-                                        </div>
-                                        <hr/>
-                                        <div class="form-group">
-                                            <label class="profile-label text-secondary">School Year:</label>
-                                            <div>
-                                                {{ user.school_year }}
-                                            </div>
-                                        </div>
-                                    {% else %}
-                                        <hr/>
-                                        <div class="form-group">
-                                            <label class="profile-label text-secondary">Department:</label>
-                                            <div>
-                                                {{ user.department }}
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                    <hr/>
-                                    <div class="form-group">
-                                        <label class="profile-label text-secondary">Phone Number:</label>
-                                        <div>
-                                            {{ user.phone }}
+                                            {{ user.department }}
                                         </div>
                                     </div>
                                 {% endif %}
-                            </fieldset>
-                            {% if request.user.id == user.user.id %}
+                                <hr/>
                                 <div class="form-group">
-                                    <button class="btn btn-outline-info" type="submit">Update</button>
+                                    <label class="profile-label text-secondary">Phone Number:</label>
+                                    <div>
+                                        {{ user.phone }}
+                                    </div>
                                 </div>
                             {% endif %}
-                        </form>
-                    </div>
+                        </fieldset>
+                        {% if request.user.id == pk %}
+                            <div class="form-group">
+                                <button class="btn btn-outline-info" type="submit">Update</button>
+                            </div>
+                        {% endif %}
+                    </form>
                 </div>
             </div>
         </div>
@@ -108,7 +106,7 @@
 </div>
 <script>
     $(document).ready(() => {
-        if ("{{ request.user.id }}" === "{{ user.user.id }}") {
+        if ("{{ request.user.id }}" === "{{ pk }}") {
             $('#profile-link').addClass('active');
         }
         $('#div_id_profile_pic label[for="id_profile_pic"]').after('<hr class="my-2"/>');

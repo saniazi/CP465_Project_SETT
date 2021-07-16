@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <link rel="icon" type="image/png" href="{% static 'main_app/media/images/icons/favicon.ico' %}"/>
+    <link rel="icon" type="image/png" href="{% static 'main_app/media/images/icons/transparenthalk_yir_icon.ico' %}"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     {% block header %}{% endblock %}
 
@@ -18,7 +18,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
 
-    <nav class="navbar navbar-expand-sm navbar-dark fixed-top" style="background-color: #3c0e68;">
+    <nav class="navbar navbar-expand-sm navbar-dark fixed-top">
         <a class="navbar-brand" href="{% url 'home' %}">
             <img src="{% static 'main_app/media/images/transparentHalk.png' %}" alt="Logo" width="40" height="40" class="mr-2">
             <strong>SETT</strong>
@@ -35,18 +35,10 @@
             </ul>
         </div>
     </nav>
-    <!-- {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-     -->
-
-     
-
-    {% block content %}{% endblock %}
+    
+    <div id="container" class="container-fluid p-5">
+        {% block content %}{% endblock %}
+    </div>
 
 </body>
 </html>

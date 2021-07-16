@@ -3,12 +3,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Login - SETT</title>
+	<title>SETT - Login</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->	
-	<link rel="icon" type="image/png" href="{% static 'main_app/media/images/icons/favicon.ico' %}"/>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+	<link rel="icon" type="image/png" href="{% static 'main_app/media/images/icons/transparenthalk_yir_icon.ico' %}"/>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" 
+		integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
 	<link rel="stylesheet" type="text/css" href="{% static 'main_app/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'main_app/util.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'main_app/login.css' %}">
@@ -16,7 +17,9 @@
 </head>
 <body>
 	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" 
+		integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" 
+		crossorigin="anonymous"></script>
 	
 	<div class="limiter">
 		<div class="container-login100">
@@ -58,7 +61,10 @@
 					{% if messages %}
 						{% for message in messages %}
 							<div class="text-center p-t-13">
-								<p class="error-message"><i class="fa fa-exclamation-triangle"></i> {{ message }}</p>
+								<p class="error-message">
+									<i class="fa fa-exclamation-triangle"></i>
+									{{ message }}
+								</p>
 							</div>
 						{% endfor %}
 					{% endif %}
@@ -82,11 +88,11 @@
 				</form>
 				<form id="student-form" method="POST">
 					{% csrf_token %}
-					<div class="modal fade" id="student-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal fade" id="student-modal" tabindex="-1" role="dialog" aria-labelledby="student-register" aria-hidden="true">
 						<div class="modal-dialog modal-dialog-centered" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title" id="exampleModalLabel">Student Registration</h5>
+									<h5 class="modal-title">Student Registration</h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 										<span aria-hidden="true">&times;</span>
 									</button>
@@ -108,11 +114,11 @@
 				</form>
 				<form id="supervisor-form" method="POST">
 					{% csrf_token %}
-					<div class="modal fade" id="supervisor-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal fade" id="supervisor-modal" tabindex="-1" role="dialog" aria-labelledby="supervisor-register" aria-hidden="true">
 						<div class="modal-dialog modal-dialog-centered" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title" id="exampleModalLabel">Supervisor Registration</h5>
+									<h5 class="modal-title">Supervisor Registration</h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 										<span aria-hidden="true">&times;</span>
 									</button>
@@ -140,10 +146,9 @@
 
 		const error_msg = msg => `<div class="invalid-feedback field-error" style="display: block;">${msg}</div>`;
 
+		// Show error messages under form fields
 		const show_err_msgs = (data, id) => {
 			for (let field in data) {
-				console.log(data);
-				console.log(data[field]);
 				$(`#${id} input[name$='${field}']`).addClass('is-invalid');
 				let msgs = data[field];
 				for (let i = 0, n = msgs.length; i < n; i++) {
@@ -152,48 +157,39 @@
 			}
 		}
 
+		// Remove error msgs
 		const remove_errors = form_id => {
 			$('.field-error').remove();
 			$(`#${form_id} input`).removeClass('is-invalid');
 		}
 
+		const register = (e, form) => {
+			e.preventDefault();
+			remove_errors(form);
+			$.ajax({
+				type: 'POST',
+				url: "{% url 'login' %}",
+				data: $(`#${form}`).serialize(),
+				success: data => {
+					// If status 1, show errors
+					if (data.status) {
+						show_err_msgs(data.errors, form);
+					} else {
+						// Show success msg and redirect to home page
+						$(`#${form} div[data-msg="success"]`).css('display', 'block');
+						window.setTimeout(data => {window.location.replace(data.redirect);}, 2000, data);
+					}
+				}
+			});
+		}
+
 		$(document).ready(() => {
 			$('#student-form').on('submit', e => {
-				e.preventDefault();
-				remove_errors('student-form');
-				$.ajax({
-					type: 'POST',
-					url: "{% url 'login' %}",
-					data: $('#student-form').serialize(),
-					success: data => {
-						if (data.status) {
-							//console.log(data.errors);
-							show_err_msgs(data.errors, 'student-form');
-						} else {
-							$('#student-form div[data-msg="success"]').css('display', 'block');
-							window.setTimeout(data => {window.location.replace(data.redirect);}, 2000, data);
-						}
-					}
-				});
+				register(e, 'student-form');
 			});
 
 			$('#supervisor-form').on('submit', e => {
-				e.preventDefault();
-				remove_errors('supervisor-form');
-				$.ajax({
-					type: 'POST',
-					url: "{% url 'login' %}",
-					data: $('#supervisor-form').serialize(),
-					success: data => {
-						if (data.status) {
-							//console.log(data.errors);
-							show_err_msgs(data.errors, 'supervisor-form');
-						} else {
-							$('#supervisor-form div[data-msg="success"]').css('display', 'block');
-							window.setTimeout(data => {window.location.replace(data.redirect);}, 2000, data);
-						}
-					}
-				});
+				register(e, 'supervisor-form');
 			});
 
 			$('#student-modal').on('hidden.bs.modal', e => {remove_errors('student-form');});

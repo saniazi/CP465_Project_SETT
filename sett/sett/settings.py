@@ -55,12 +55,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'rest_framework',
-    # 'rest_framework.authtoken',
-    # 'rest_auth',
-    # 'allauth',
-    # 'rest_auth.registration',
-    # 'dj_rest_auth',
 ]
 
 MIDDLEWARE = [
@@ -167,19 +161,6 @@ AUTHENTICATION_BACKENDS = ['main_app.backends.EmailBackend']
 TIME_INPUT_FORMATS = ('%H:%M',)
 
 DEFAULT_AUTO_FIELD='django.db.models.AutoField'
-
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework.authentication.TokenAuthentication',
-#     ]
-# }
-
-# Don't require username for user
-# ACCOUNT_USERNAME_REQUIRED = False
-
-# REST_AUTH_REGISTER_SERIALIZERS = {
-#     "REGISTER_SERIALIZER": "main_app.serializers.CustomRegisterSerializer",
-# }
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'main_app/static/main_app/media')
 MEDIA_URL = '/media/'

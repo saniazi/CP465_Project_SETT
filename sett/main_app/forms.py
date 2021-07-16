@@ -85,11 +85,11 @@ class YEAR_CHOICES(forms.Form):
     YEAR = forms.CharField(widget=forms.RadioSelect(choices=YEAR))
 
 
-class createHoursFormAssistants(ModelForm):
+class TimeSheetEntryForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
-        super(createHoursFormAssistants, self).__init__(*args, **kwargs)
+        super(TimeSheetEntryForm, self).__init__(*args, **kwargs)
         if user is not None:
             self.fields['job'].queryset = Job.objects.filter(student=user.student)
 

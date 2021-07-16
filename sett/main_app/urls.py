@@ -14,27 +14,22 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from . import views as main_views
+from . import views
 from django.contrib.auth import views as auth_views
-from .forms import LoginFormView
-from django.conf.urls import include, url
 from django.conf import settings
 from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('', main_views.home, name='home'),
-    path('login/', main_views.login_view, name='login'),
-    path('logout/', main_views.logout_view, name='logout'),
-    path('profile/<int:pk>/', main_views.profile, name='profile'),
-    path('student_dashboard/', main_views.student_dashboard, name='student-dash'),
-    # url(r'^rest-auth/', include('rest_auth.urls')),
-    # url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
-    # path('dj-rest-auth/', include('dj_rest_auth.urls')),
-    path('supervisor_dashboard/', main_views.supervisor_dashboard, name='super-dash'),
-    path('get_entries/', main_views.get_entries, name='get_entries'),
-    path('update_position/', main_views.update_position, name='positions'),
-    path('get_job/', main_views.get_job, name='get_job'),
+    path('', views.home, name='home'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('profile/<int:pk>/', views.profile, name='profile'),
+    path('student_dashboard/', views.student_dashboard, name='student-dash'),
+    path('supervisor_dashboard/', views.supervisor_dashboard, name='super-dash'),
+    path('get_entries/', views.get_entries, name='get_entries'),
+    path('update_position/', views.update_position, name='positions'),
+    path('get_job/', views.get_job, name='get_job'),
     path('password-reset/', 
         auth_views.PasswordResetView.as_view(template_name='main_app/password_reset.html'), 
         name='password_reset'),

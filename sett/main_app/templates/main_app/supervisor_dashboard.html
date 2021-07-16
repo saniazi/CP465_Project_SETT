@@ -2,121 +2,117 @@
 {% load static %}
 {% block header %}
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css">
-<link rel="stylesheet" type="text/css" href="{% static 'main_app/super_dash.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'main_app/styles.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.min.css" integrity="sha512-rxThY3LYIfYsVCWPCW9dB0k+e3RZB39f23ylUYTEuZMDrN/vRqLdaCBo/FbvVT6uC2r0ObfPzotsfKF9Qc5W5g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<link rel="stylesheet" type="text/css" href="{% static 'main_app/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
 {% endblock header %}
 {% block nav_links %}
 {% include 'main_app/nav_links_super.html' %}
 {% endblock nav_links %}
 {% block content %}
 
-<div id="container" class="container-fluid px-5 pb-5" style="background-color: #f5f5f5;">
-    <div class="row pt-5 mb-3">
-        <div class="col text-center">
-            <h1>Timesheet Review and Approval</h1>
-        </div>
+<div class="row mb-3">
+    <div class="col text-center">
+        <h1>Timesheet Review and Approval</h1>
     </div>
+</div>
 
-    <div class="row pt-4 mb-3">
-        <div class="col-auto">
-            <table class="table table-bordered">
-                <thead>
-                    <tr class="text-center" style="background-color: #adadad;">
-                        <th>Pay Period</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <form>
-                                <div class="form-group row align-items-center">
-                                    <div class="input-group col" id="week-selector-wrapper">
-                                        <span class="input-group-prepend">
-                                            <button type="button" class="btn btn-secondary prev-week">&laquo;</button>
-                                        </span>
-                                        <input type="text" class="week-picker" id="week-picker" placeholder="Select a Week" readonly>
-                                        <span class="input-group-append">
-                                            <button type="button" class="btn btn-secondary next-week">&raquo;</button>
-                                        </span>
-                                    </div>
+<div class="row pt-4 mb-3">
+    <div class="col-auto">
+        <table class="table table-bordered">
+            <thead>
+                <tr class="text-center" style="background-color: #adadad;">
+                    <th>Pay Period</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <form>
+                            <div class="form-group row align-items-center">
+                                <div class="input-group col" id="week-selector-wrapper">
+                                    <span class="input-group-prepend">
+                                        <button type="button" class="btn btn-secondary prev-week">&laquo;</button>
+                                    </span>
+                                    <input type="text" class="week-picker" id="week-picker" placeholder="Select a Week" readonly>
+                                    <span class="input-group-append">
+                                        <button type="button" class="btn btn-secondary next-week">&raquo;</button>
+                                    </span>
                                 </div>
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    
-    <div class="modal fade" id="action-modal" tabindex="-1" role="dialog" aria-labelledby="modal-label" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modal-label"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" id="modal-body">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">No</button>
-                    <button id="confirm-action" type="button" class="btn btn-primary" name="add">Yes</button>
-                </div>
+</div>
+
+<div class="modal fade" id="action-modal" tabindex="-1" role="dialog" aria-labelledby="modal-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-label"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">No</button>
+                <button id="confirm-action" type="button" class="btn btn-primary" name="add">Yes</button>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="row">
-        <div class="col">
-            <table id="entry-table" class="table table-striped table-bordered" style="width: 100%;">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Date</th>
-                        <th>Job ID</th>
-                        <th>Position</th>
-                        <th>Student</th>
-                        <th>Time In</th>
-                        <th>Time Out</th>
-                        <th>Hours</th>
-                        <th>Wage</th>
-                        <th>Season</th>
-                        <th>Status</th>
-                        <th><input id="check-all" type="checkbox" disabled /></th>
-                    </tr>
-                </thead>
-                <tbody id="entries"></tbody>
-                <tfoot>
-                    <tr>
-                        <th>Date</th>
-                        <th>Job ID</th>
-                        <th>Position</th>
-                        <th>Student</th>
-                        <th>Time In</th>
-                        <th>Time Out</th>
-                        <th>Hours</th>
-                        <th>Wage</th>
-                        <th>Season</th>
-                        <th>Status</th>
-                        <th></th>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
+<div class="row">
+    <div class="col">
+        <table id="entry-table" class="table table-striped table-bordered" style="width: 100%;">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Date</th>
+                    <th>Job ID</th>
+                    <th>Position</th>
+                    <th>Student</th>
+                    <th>Time In</th>
+                    <th>Time Out</th>
+                    <th>Hours</th>
+                    <th>Wage</th>
+                    <th>Season</th>
+                    <th>Status</th>
+                    <th><input id="check-all" type="checkbox" disabled /></th>
+                </tr>
+            </thead>
+            <tbody id="entries"></tbody>
+            <tfoot>
+                <tr>
+                    <th>Date</th>
+                    <th>Job ID</th>
+                    <th>Position</th>
+                    <th>Student</th>
+                    <th>Time In</th>
+                    <th>Time Out</th>
+                    <th>Hours</th>
+                    <th>Wage</th>
+                    <th>Season</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </tfoot>
+        </table>
     </div>
 </div>
 
 <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 <script src="{% static 'main_app/django_ajax.js' %}"></script>
 <script>
     const ACTION_BUTTONS = `<div class="action-buttons col-12 col-md-auto">
     <button id="undo" class="action-btn btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#action-modal" disabled>Undo</button>
     <button id="reject" class="action-btn btn btn-danger ml-1" type="button" data-toggle="modal" data-target="#action-modal" disabled>Reject</button>
-    <button id="approve" class="action-btn btn btn-success ml-1" type="button" data-toggle="modal" data-target="#action-modal" disabled>Approve</button>
+    <button id="approve" class="action-btn btn btn-primary ml-1" type="button" data-toggle="modal" data-target="#action-modal" disabled>Approve</button>
     </div>`;
     let weekpicker, start_date, end_date, table, current_action, status_msg;
 
@@ -124,13 +120,22 @@
         start_date = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay());
         end_date = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 6);
         weekpicker.datepicker('update', start_date);
-        weekpicker.val((start_date.getMonth() + 1) + '/' + start_date.getDate() + '/' + start_date.getFullYear() + ' - ' + (end_date.getMonth() + 1) + '/' + end_date.getDate() + '/' + end_date.getFullYear());
+        weekpicker.val(
+            (start_date.getMonth() + 1) + '/' 
+            + start_date.getDate() + '/' 
+            + start_date.getFullYear() + ' - ' 
+            + (end_date.getMonth() + 1) + '/' 
+            + end_date.getDate() + '/' 
+            + end_date.getFullYear()
+        );
     }
-
+ 
+    // Checkboxes for entries
     const create_checks = (pk, status) => {
         return `<input type="checkbox" data-pk="${pk}" value="${status}" />`;
     }
 
+    // Create student profile links
     const profile_link = data => {
         let [id, user_pk] = data.split(' ');
         let href = "{% url 'profile' 0 %}".replace(/0/, user_pk);
@@ -138,25 +143,32 @@
     }
 
     const customize_modal = (title, body, action, status) => {
+        // Update global vars
         current_action = action;
         status_msg = status;
         $('#modal-label').text(title);
         $('#modal-body').text(body); 
     }
 
+    const get_selected_entries = () => $('#entry-table').DataTable()
+        .column(10)
+        .nodes()
+        .to$()
+        .find('input:checkbox:checked');
+
+    // Process requested action and update entries
     const update_entries = () => {
-        let entries = $('#entry-table').DataTable()
-            .column(10)
-            .nodes()
-            .to$()
-            .find('input:checkbox:checked');
+        // Get checked entries
+        let entries = get_selected_entries();
+
+        // Filter out entries that don't need to be updated
         let entry_pks = [];
         for(let i = 0, n = entries.length; i < n; i++) {
             if (entries.eq(i).prop('value') !== status_msg) {
                 entry_pks.push(entries.eq(i).data('pk'));
             }
         }
-
+        // Send action to be performed on enties and entries to server via ajax
         $.ajax({
             type: 'POST',
             url: "{% url 'super-dash' %}",
@@ -169,14 +181,7 @@
         });
     }
 
-    const get_selected_entries = () => $('#entry-table').DataTable()
-        .column(10)
-        .nodes()
-        .to$()
-        .find('input:checkbox:checked');
-    
     $(document).ready(() => {
-        // $('html').css('background-color', '#f5f5f5');
         $('#dashboard-link').addClass('active');
         weekpicker = $('.week-picker');
 
@@ -251,6 +256,7 @@
             language: {
                 "emptyTable": "No entries found"
             },
+            // After initial draw, add action buttons next to search bar
             initComplete: function(settings, json) {
                 let table_length_div = $('#entry-table_length').parent();
                 let table_filter = $('#entry-table_filter').parent();
@@ -261,6 +267,7 @@
                 table_filter.addClass(['col-12', 'col-md']);
                 table_filter.parent().append(ACTION_BUTTONS);
                 
+                // Set handlers for buttons
                 $('#approve').on('click', e => {
                     customize_modal(
                         'Approve Entries', 
@@ -297,6 +304,7 @@
                 let num_entries = $('#entry-table').DataTable().data().count();
                 let selected_entries = get_selected_entries();
 
+                // Set up check-all checkbox
                 $('#check-all').prop({
                     disabled: !num_entries, 
                     checked: selected_entries.length == num_entries && (num_entries != 0)
@@ -305,11 +313,13 @@
             }
         });
 
+        // Enable/disabe buttons when entries are checked/unchecked
         $('#entries').on('change', 'input:checkbox', e => {
             $('.action-btn').prop('disabled', get_selected_entries().length == 0);
             $('#check-all').prop('checked', false);
         });
 
+        // Toggle all checkboxes when toggling check-all checkbox
         $('#check-all').on('change', function(e) {
             $('#entry-table').DataTable()
                 .column(10)
