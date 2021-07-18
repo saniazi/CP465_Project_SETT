@@ -22,14 +22,6 @@ import os
 CURR_DIR = Path(__file__).resolve().parent
 BASE_DIR = CURR_DIR.parent
 
-#Getting Database info
-try:
-    json_path = PurePath.joinpath(CURR_DIR, "secrets.json")
-    with open(json_path) as handle:
-        SECRETS = json.load(handle)
-except IOError:
-    print(f"IOError: {IOError}")
-    sys.exit()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -40,8 +32,7 @@ SECRET_KEY = 's21466xe_j3^%vg4j)6hbx90%1%i0j3^=!bdycqy^#^67+1vth'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-#ALLOWED_HOSTS = []
-ALLOWED_HOSTS = SECRETS['allowed_hosts']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -55,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -104,12 +96,12 @@ WSGI_APPLICATION = 'sett.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': SECRETS['db_name'],
-        'USER': SECRETS['db_user'],
-        'PASSWORD': SECRETS['db_password'],
-        'HOST': SECRETS['db_host'],
-        'PORT': SECRETS['db_port'],
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'SETT',
+        'USER': 'saniazi',
+        'PASSWORD': os.environ.get('SETT_PASS'),
+        'HOST': 'sett.cm2khcedtxny.us-east-2.rds.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
@@ -162,7 +154,7 @@ TIME_INPUT_FORMATS = ('%H:%M',)
 
 DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'main_app/static/main_app/media')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'main_app/static/main_app/media')
 MEDIA_URL = '/media/'
 
 # For password reset
@@ -172,3 +164,17 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL')
 EMAIL_HOST_PASSWORD = os.environ.get('PASS')
+
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+
+AWS_LOCATION = 'static'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+DEFAULT_FILE_STORAGE = 'sett.storage_backends.PublicMediaStorage'

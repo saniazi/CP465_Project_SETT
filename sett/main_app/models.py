@@ -131,15 +131,16 @@ class Student(models.Model):
     def __str__(self):
 	    return str(self.id_student)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    # Not used in production
+    # def save(self, *args, **kwargs):
+    #     super().save(*args, **kwargs)
 
-        img = Image.open(self.profile_pic.path)
+    #     img = Image.open(self.profile_pic.path)
 
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.profile_pic.path)
+    #     if img.height > 300 or img.width > 300:
+    #         output_size = (300, 300)
+    #         img.thumbnail(output_size)
+    #         img.save(self.profile_pic.path)
 
     class Meta:
         #managed = False
@@ -166,15 +167,16 @@ class Supervisor(models.Model):
     def __str__(self):
 	    return str(self.id_supervisor)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    # Not used in production
+    # def save(self, *args, **kwargs):
+    #     super().save(*args, **kwargs)
 
-        img = Image.open(self.profile_pic.path)
+    #     img = Image.open(self.profile_pic.path)
 
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.profile_pic.path)
+    #     if img.height > 300 or img.width > 300:
+    #         output_size = (300, 300)
+    #         img.thumbnail(output_size)
+    #         img.save(self.profile_pic.path)
 
     class Meta:
         #managed = False
