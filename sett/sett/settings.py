@@ -15,6 +15,7 @@ from pathlib import Path, PurePath
 import sys
 import json
 import os
+import django_heroku
 
 #BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -30,7 +31,7 @@ BASE_DIR = CURR_DIR.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', 'saniazi-sett.herokuapp.com']
 
@@ -94,14 +95,21 @@ WSGI_APPLICATION = 'sett.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'SETT',
+#         'USER': 'saniazi',
+#         'PASSWORD': os.environ.get('SETT_PASS'),
+#         'HOST': 'sett.cm2khcedtxny.us-east-2.rds.amazonaws.com',
+#         'PORT': '5432',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'SETT',
-        'USER': 'saniazi',
-        'PASSWORD': os.environ.get('SETT_PASS'),
-        'HOST': 'sett.cm2khcedtxny.us-east-2.rds.amazonaws.com',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -179,3 +187,5 @@ AWS_LOCATION = 'static'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 DEFAULT_FILE_STORAGE = 'sett.storage_backends.PublicMediaStorage'
+
+django_heroku.settings(locals(), staticfiles=False)
