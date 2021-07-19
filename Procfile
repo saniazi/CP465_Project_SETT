@@ -1,1 +1,1 @@
-web gunicorn sett.sett.wsgi.py --log-file -
+web gunicorn --pythonpath sett sett.wsgi.py --log-file -
