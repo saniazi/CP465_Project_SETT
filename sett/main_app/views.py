@@ -292,7 +292,10 @@ def profile(request, pk):
 
             form = modelform(request.POST, request.FILES, instance=user_group)
             if form.is_valid():
-                form.save()
+                user = form.save()
+                user.user.username = user.user.email = request.POST['email']
+                user.user.save(update_fields=['username', 'email'])
+
                 messages.success(request, f'Your profile has been updated!')
                 return redirect(reverse(f'profile', args=[pk]))
             else:
