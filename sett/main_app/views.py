@@ -121,6 +121,8 @@ def student_dashboard(request):
     if request.method == 'POST':
         # Add new entry
         if 'add' in request.POST:
+            if TimeSheetEntry.objects.all().count() >= 100:
+                return JsonResponse({'limit_reached': ''})
             form = TimeSheetEntryForm(request.POST, prefix="add")
         # Update existing entry
         elif 'update' in request.POST:
@@ -285,6 +287,9 @@ def profile(request, pk):
             raise Http404
 
         if request.method == 'POST' and request.user.id == pk:
+            messages.warning(request, 'Update profile disabled on demo.')
+            return redirect(reverse(f'profile', args=[pk]))
+
             form = modelform(request.POST, request.FILES, instance=user_group)
             if form.is_valid():
                 form.save()

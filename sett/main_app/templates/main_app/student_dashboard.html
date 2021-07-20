@@ -244,6 +244,8 @@
             } else {
                 console.log("Error: Error code is not 'unique_together'.");
             }
+        } else if ('limit_reached' in data) {
+            alert('Limit of 50 entries on demo reached!');
         } else {
             console.log("Error: Uknown form submission error.");
         }

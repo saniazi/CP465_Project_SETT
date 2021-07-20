@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 #from pathlib import Path
 from pathlib import Path, PurePath
 import sys
-import json
 import os
 import django_heroku
 
@@ -31,7 +30,7 @@ BASE_DIR = CURR_DIR.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', 'saniazi-sett.herokuapp.com']
 
@@ -98,10 +97,10 @@ WSGI_APPLICATION = 'sett.wsgi.application'
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'SETT',
+#         'NAME': 'sett',
 #         'USER': 'saniazi',
 #         'PASSWORD': os.environ.get('SETT_PASS'),
-#         'HOST': 'sett.cm2khcedtxny.us-east-2.rds.amazonaws.com',
+#         'HOST': 'sett-db.cm2khcedtxny.us-east-2.rds.amazonaws.com',
 #         'PORT': '5432',
 #     }
 # }

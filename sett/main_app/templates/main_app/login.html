@@ -185,11 +185,15 @@
 
 		$(document).ready(() => {
 			$('#student-form').on('submit', e => {
-				register(e, 'student-form');
+				e.preventDefault();
+				alert('Registration disabled on demo');
+				// register(e, 'student-form');
 			});
 
 			$('#supervisor-form').on('submit', e => {
-				register(e, 'supervisor-form');
+				e.preventDefault();
+				alert('Registration disabled on demo');
+				// register(e, 'supervisor-form');
 			});
 
 			$('#student-modal').on('hidden.bs.modal', e => {remove_errors('student-form');});
