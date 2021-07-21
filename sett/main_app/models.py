@@ -19,6 +19,11 @@ def user_directory_path(instance, filename):
         return f'images/profile_pics/{instance.user.id}/{filename}'
 
 
+class CustomEmailField(models.EmailField):
+    def to_python(self, value):
+        return value.lower()
+
+
 class Department(models.Model):
     dep_name = models.CharField(max_length=200)
 
@@ -118,7 +123,7 @@ class Student(models.Model):
     first_name = models.CharField(max_length=15)
     last_name = models.CharField(max_length=100)
     dob = models.DateField()
-    email = models.EmailField(
+    email = CustomEmailField(
         unique=True,
         error_messages={
             'unique': 'This email is already registered.'
@@ -154,7 +159,7 @@ class Supervisor(models.Model):
         })
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
-    email = models.EmailField(
+    email = CustomEmailField(
         unique=True,
         error_messages={
             'unique': 'This email is already registered.'
