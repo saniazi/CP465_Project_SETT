@@ -6,22 +6,25 @@ SETT (student employee time tracker) is a web application which allows WLU stude
 A demo can be found at https://saniazi-sett.herokuapp.com
 
 ### Logging in
-The demo has 5 students and 5 supervisors registered. The login credentials are listed below.<br/><br/>
+The demo has 5 students and 5 supervisors registered. Their login credentials and respective IDs are listed below.<br/><br/>
 Students:
-- john@mail.com
-- jane@mail.com
-- smith@mail.com
-- greg@mail.com
-- rr@mail.com
+- john@mail.com, ID: 100001
+- jane@mail.com, ID: 100002
+- smith@mail.com, ID: 100003
+- greg@mail.com, ID: 100004
+- rr@mail.com, ID: 100005
 
 Supervisors:
-- schmoe@mail.com
-- oo@mail.com
-- ll@mail.com
-- bloggs@mail.com
-- foo@mail.com
+- schmoe@mail.com, ID: 120001
+- oo@mail.com, ID: 120002
+- ll@mail.com, ID: 120003
+- bloggs@mail.com, ID: 120004
+- foo@mail.com, ID: 120005
 
 Password: qqqqqqq1
+
+### Jobs
+If there are no jobs assigned to a student, you can log in as a supervisor and create one on the Positions page. While creating a new position, you'll have the option of assigning a student to the job. After creating a position, log in as the student you asigned the job to. You will now be able to add timesheet entries using the newly created position.
 
 ## Screenshots
 ### Login Page
