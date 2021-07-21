@@ -1,6 +1,6 @@
 # CP465_Project_SETT
 
-SETT (student employee time tracker) is a web application which allows WLU student employees to complete their timesheet entry form online and allows supervisors to review timesheet entries. 
+SETT (student employee time tracker) is a web application which allows WLU student employees to complete their timesheet entry form online and allows supervisors to review timesheet entries. Data tables are stored on a live postgresql database using AWS RDS and static data is stored using an AWS S3 bucket.
 
 ## Demo
 A demo can be found at https://saniazi-sett.herokuapp.com
