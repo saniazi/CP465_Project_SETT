@@ -76,19 +76,23 @@ body {
     border: 1px solid #dddddd;
     border-radius: 10px;
     margin-bottom: 20px;
-  }
-  
-  .account-img {
+}
+
+.account-img {
     height: 125px;
     width: 125px;
     margin-right: 20px;
     margin-bottom: 16px;
-  }
-  
-  .account-heading {
+}
+
+.account-heading {
     font-size: 2.5rem;
-  }
-  
-  .profile-label {
+}
+
+.profile-label {
     font-size: 0.9rem;
-  }
+}
+
+.media {
+    flex-wrap: wrap;
+}

@@ -35,9 +35,11 @@
                             </select>
                         </div>
                         {{ form|crispy }}
-                        <button id="new" name="new" type="submit" class="btn btn-success" disabled>Create New</button>
-                        <button id="save" name="save" type="submit" class="btn btn-outline-info" disabled>Save</button>
-                        <button id="delete" type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-modal" disabled>Delete</button>
+                        <div class="d-flex justify-content-center">
+                            <button id="new" name="new" type="submit" class="btn btn-success" disabled>Create New</button>
+                            <button id="save" name="save" type="submit" class="btn btn-outline-info ml-2" disabled>Save</button>
+                            <button id="delete" type="button" class="btn btn-danger ml-2" data-toggle="modal" data-target="#delete-modal" disabled>Delete</button>
+                        </div>
                     </fieldset>
                     <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="modal-label" aria-hidden="true">
                         <div class="modal-dialog" role="document">
