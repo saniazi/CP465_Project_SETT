@@ -8,18 +8,18 @@ A demo can be found at https://saniazi-sett.herokuapp.com
 ### Logging in
 The demo has 5 students and 5 supervisors registered. Their login credentials and respective IDs are listed below.<br/><br/>
 Students:
-- john@mail.com, ID: 100001
-- jane@mail.com, ID: 100002
-- smith@mail.com, ID: 100003
-- greg@mail.com, ID: 100004
-- rr@mail.com, ID: 100005
+- john@example.com, ID: 100001
+- jane@example.com, ID: 100002
+- smith@example.com, ID: 100003
+- greg@example.com, ID: 100004
+- rr@example.com, ID: 100005
 
 Supervisors:
-- schmoe@mail.com, ID: 120001
-- oo@mail.com, ID: 120002
-- ll@mail.com, ID: 120003
-- bloggs@mail.com, ID: 120004
-- foo@mail.com, ID: 120005
+- schmoe@example.com, ID: 120001
+- oo@example.com, ID: 120002
+- ll@example.com, ID: 120003
+- bloggs@example.com, ID: 120004
+- foo@example.com, ID: 120005
 
 Password: qqqqqqq1
 
